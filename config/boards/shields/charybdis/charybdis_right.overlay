@@ -56,10 +56,25 @@
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 
-        /*   optional features   */
-        /* MOUSE=1 must stay below SNIPE/SCROLL: driver uses highest active layer. */
+        /*
+         * inorichi PMW3610: mode follows highest active layer.
+         * 1 MOUSE (automouse) must stay below 5 SNIPE / 6 SCROLL.
+         */
         snipe-layers = <5>;
         scroll-layers = <6>;
         automouse-layer = <1>;
+    };
+};
+
+/*
+ * Required: the sensor only emits Zephyr input events.
+ * Without this listener ZMK never sends HID mouse reports, so keys
+ * work and the ball looks dead. See inorichi README + zmk.dev pointing.
+ * Right half is central, so the listener belongs here (not on left).
+ */
+/ {
+    trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackball>;
     };
 };

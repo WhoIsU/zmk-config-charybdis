@@ -17,11 +17,11 @@ endif
 
 config MOUSE_LAYER_INDEX
 	int "Index of mouse layer"
-	default 4
+	default 1
 
 config SCROLL_LAYER_INDEX
 	int "Index of scroll layer"
-	default 5
+	default 6
 
 config MOUSE_LAYER_ACTIVE_MS
 	int "Amount of milliseconds the mouse layer will be active after using the trackball"

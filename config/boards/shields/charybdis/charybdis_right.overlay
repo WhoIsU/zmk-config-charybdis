@@ -57,8 +57,9 @@
         irq-gpios = <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 
         /*   optional features   */
-        snipe-layers = <1>;
-        //scroll-layers = <2>;
-        automouse-layer = <5>;
+        /* MOUSE=1 must stay below SNIPE/SCROLL: driver uses highest active layer. */
+        snipe-layers = <5>;
+        scroll-layers = <6>;
+        automouse-layer = <1>;
     };
 };

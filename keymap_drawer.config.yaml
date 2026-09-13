@@ -117,6 +117,43 @@ parse_config:
     type: trans
 
   raw_binding_map:
+    # Layers (new layout)
+    "&lt 4 ESC":
+      tap: $$mdi:keyboard-esc$$
+      hold: SYS
+    "&lt 3 SPACE":
+      tap: $$mdi:keyboard-space$$
+      hold: NAV
+    "&mo 2":
+      tap: MO
+      hold: SYMB
+    "&mt LCTRL SEMI":
+      tap: ';'
+      hold: $$mdi:apple-keyboard-control$$
+    "&mt LALT SLASH":
+      tap: '/'
+      hold: $$mdi:apple-keyboard-option$$
+    "&lt 5 SQT":
+      tap: "'"
+      hold: SNIPE
+    "&lt 6 BSLH":
+      tap: '\'
+      hold: SCRL
+    "&kp LG(E)":
+      tap: E
+      hold: Win
+    "&kp LG(V)":
+      tap: V
+      hold: Win
+    "&kp LG(D)":
+      tap: D
+      hold: Win
+    "&kp LG(L)":
+      tap: L
+      hold: Win
+    "&kp LA(F4)":
+      tap: F4
+      hold: Alt
     # Layers
     "&ltq 1 BACKSPACE":
       tap:  $$mdi:backspace$$

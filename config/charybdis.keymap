@@ -9,6 +9,17 @@
  * 0 Base · 1 MOUSE · 2 SYMB · 3 NAV · 4 SYS · 5 SNIPE · 6 SCROLL
  */
 
+/*
+ * 鼠标按键在 MOUSE / SNIPE / SCROLL 三层共用同一套布局，
+ * 改这里就能三层同时生效，不必逐层手改。
+ * 半排 = 6 键，顺序与 Base 层一致。
+ */
+#define MS_TRANS_6     &trans  &trans  &trans     &trans     &trans     &trans
+// 右手中排: H  J=左键  K=中键  L=右键  ;=右键  '(SNIPE)
+#define MS_HOME_R      &trans  &mkp LCLK  &mkp MCLK  &mkp RCLK  &mkp RCLK  &trans
+// 右手下排: N  M  ,=左键  .=中键  /(Alt)  BSLH(SCROLL)
+#define MS_BOTTOM_R    &trans  &trans  &mkp LCLK  &mkp MCLK  &trans     &trans
+
 &lt {
     tapping-term-ms = <200>;
     flavor = "tap-preferred";
@@ -39,9 +50,9 @@
         Mouse {
             label = "MOUSE";
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &trans     &trans     &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &trans     &mkp RCLK  &mkp RCLK  &trans
-&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &mkp LCLK  &trans     &trans  &trans
+MS_TRANS_6        MS_TRANS_6
+MS_TRANS_6        MS_HOME_R
+MS_TRANS_6        MS_BOTTOM_R
                         &trans  &trans  &trans        &trans  &trans
             >;
         };
@@ -79,9 +90,9 @@
         Snipe {
             label = "SNIPE";
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &trans     &trans     &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &trans     &mkp RCLK  &mkp RCLK  &trans
-&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &mkp LCLK  &trans     &trans  &trans
+MS_TRANS_6        MS_TRANS_6
+MS_TRANS_6        MS_HOME_R
+MS_TRANS_6        MS_BOTTOM_R
                         &trans  &trans  &trans        &trans  &trans
             >;
         };
@@ -89,9 +100,9 @@
         Scroll {
             label = "SCROLL";
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &trans  &trans  &trans  &trans
+MS_TRANS_6        MS_TRANS_6
+MS_TRANS_6        MS_HOME_R
+MS_TRANS_6        MS_BOTTOM_R
                         &trans  &trans  &trans        &trans  &trans
             >;
         };

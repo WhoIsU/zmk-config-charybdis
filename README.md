@@ -2,23 +2,23 @@
 
 Charybdis 分体键盘（PMW3610 轨迹球）的 ZMK 配置。
 
+基于 **zmkfirmware/zmk `main`** + [badjeff/zmk-pmw3610-driver](https://github.com/badjeff/zmk-pmw3610-driver)，只维护本 config 仓库，不 fork ZMK。
+
 ## 层序
 
 `0 Base · 1 MOUSE · 2 SYMB · 3 NAV · 4 SYS · 5 SNIPE · 6 SCROLL`
 
-PMW3610 只看当前**最高**激活层，所以自动鼠标层（1）必须低于狙击（5）和滚轮（6）。层序一旦改错，按住 `'` 再滚球就不会降速。
-
 ## 轨迹球
 
-| 模式 | 触发方式 | 定义位置 |
+| 模式 | 触发方式 | 实现 |
 | --- | --- | --- |
-| 普通移动 | 滚球即自动进入 MOUSE 层 | `automouse-layer = <1>` |
-| 狙击（降 CPI） | 按住右手小指 `'` | `snipe-layers = <5>` |
-| 滚轮 | 按住右手小指 `\` | `scroll-layers = <6>` |
+| 普通移动 | 滚球即自动进入 MOUSE 层 | `&zip_temp_layer 1 750` |
+| 狙击（降速） | 按住右手小指 `'` | 层 5 + `&zip_xy_scaler 1 3` |
+| 滚轮 | 按住右手小指 `\` | 层 6 + scaler + `&zip_xy_to_scroll_mapper` |
 
-三者都在 `config/boards/shields/charybdis/charybdis_right.overlay` 里。停止滚球后自动鼠标层还会保持 `CONFIG_PMW3610_AUTOMOUSE_TIMEOUT_MS` 毫秒（见 `charybdis_right.conf`，当前 750）。
+三者都在 `config/boards/shields/charybdis/charybdis_right.overlay` 的 `trackball_listener` 里。停止滚球后自动鼠标层还会保持 750ms（改 `zip_temp_layer` 的第二个参数）。
 
-这个超时是唯一的调节点——早先 `Kconfig.defconfig` 里有个 `MOUSE_LAYER_ACTIVE_MS=400`，但 inorichi 的驱动根本不读它，已删除。
+传感器朝向对应旧 inorichi 的 `ORIENTATION_90` + `INVERT_X`：`swap-xy` + `invert-x` + `invert-y`。CPI 设为 600（约等于旧版 2400/4）。手感不对就先拧 overlay 里的 `cpi` / scaler，再考虑轴翻转。
 
 ## 鼠标键
 

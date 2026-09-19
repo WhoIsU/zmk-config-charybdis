@@ -3,7 +3,10 @@
  *
  * SPDX-License-Identifier: MIT
  */
- 
+
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <input/processors.dtsi>
+
 #include "charybdis.dtsi"
 
 &default_transform {
@@ -51,30 +54,56 @@
 
     trackball: trackball@0 {
         status = "okay";
-        compatible = "pixart,pmw3610";
+        compatible = "pixart,pmw3610-alt";
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 
+        /* ~ old CPI 2400 / dividor 4 */
+        cpi = <600>;
+
         /*
-         * inorichi PMW3610: mode follows highest active layer.
-         * 1 MOUSE (automouse) must stay below 5 SNIPE / 6 SCROLL.
+         * inorichi ORIENTATION_90 + INVERT_X:
+         *   x = -raw_y; y = -raw_x  →  swap-xy + invert both axes
          */
-        snipe-layers = <5>;
-        scroll-layers = <6>;
-        automouse-layer = <1>;
+        swap-xy;
+        invert-x;
+        invert-y;
+
+        evt-type = <INPUT_EV_REL>;
+        x-input-code = <INPUT_REL_X>;
+        y-input-code = <INPUT_REL_Y>;
     };
 };
 
 /*
- * Required: the sensor only emits Zephyr input events.
- * Without this listener ZMK never sends HID mouse reports, so keys
- * work and the ball looks dead. See inorichi README + zmk.dev pointing.
- * Right half is central, so the listener belongs here (not on left).
+ * Sensor emits Zephyr input events; the listener turns them into HID.
+ * Snipe / scroll / automouse used to live on the inorichi sensor node;
+ * mainline does them with layer-scoped input processors instead.
+ *
+ * Override nodes run first (declaration order). A match skips the rest
+ * unless process-next is set — so SNIPE/SCROLL do not also fire automouse.
  */
 / {
     trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
+
+        /* layer 5 SNIPE: ~1/3 speed (old snipe CPI 800 / normal 2400) */
+        snipe {
+            layers = <5>;
+            input-processors = <&zip_xy_scaler 1 3>;
+        };
+
+        /* layer 6 SCROLL: accumulate like old SCROLL_TICK=32 */
+        scroll {
+            layers = <6>;
+            input-processors =
+                <&zip_xy_scaler 1 32>,
+                <&zip_xy_to_scroll_mapper>;
+        };
+
+        /* default: temp MOUSE layer for 750ms after ball motion */
+        input-processors = <&zip_temp_layer 1 750>;
     };
 };

@@ -5,8 +5,11 @@
 #include <dt-bindings/zmk/outputs.h>
 
 /*
- * 层序（PMW3610 只看 highest layer，所以 MOUSE 必须低于 SNIPE/SCROLL）：
+ * 层序：
  * 0 Base · 1 MOUSE · 2 SYMB · 3 NAV · 4 SYS · 5 SNIPE · 6 SCROLL
+ *
+ * 轨迹球模式由 charybdis_right.overlay 里的 input processors 按层匹配：
+ * SNIPE(5)/SCROLL(6) 覆盖优先，否则 zip_temp_layer 临时开 MOUSE(1)。
  */
 
 /*

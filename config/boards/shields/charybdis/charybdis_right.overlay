@@ -59,8 +59,8 @@
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 
-        /* ~ old CPI 2400 / dividor 4 */
-        cpi = <600>;
+        /* pointer felt slow at 600; bump for normal move / snipe base */
+        cpi = <1200>;
 
         /*
          * inorichi ORIENTATION_90 + INVERT_X:
@@ -95,11 +95,11 @@
             input-processors = <&zip_xy_scaler 1 3>;
         };
 
-        /* layer 6 SCROLL: accumulate like old SCROLL_TICK=32 */
+        /* layer 6 SCROLL: higher divisor = slower wheel (was 32 @ 600cpi) */
         scroll {
             layers = <6>;
             input-processors =
-                <&zip_xy_scaler 1 32>,
+                <&zip_xy_scaler 1 96>,
                 <&zip_xy_to_scroll_mapper>;
         };
 

@@ -18,7 +18,7 @@ Charybdis 分体键盘（PMW3610 轨迹球）的 ZMK 配置。
 
 三者都在 `config/boards/shields/charybdis/charybdis_right.overlay` 的 `trackball_listener` 里。停止滚球后自动鼠标层还会保持 750ms（改 `zip_temp_layer` 的第二个参数）。
 
-传感器朝向对应旧 inorichi 的 `ORIENTATION_90` + `INVERT_X`：`swap-xy` + `invert-x` + `invert-y`。普通移动调 `cpi`（当前 1200）；滚轮调 scroll 里的 `&zip_xy_scaler 1 N`（N 越大越慢，当前 96）；狙击仍是相对普通速度的 `1/3`。
+传感器朝向对应旧 inorichi 的 `ORIENTATION_90` + `INVERT_X`：`swap-xy` + `invert-x` + `invert-y`。普通移动调 `cpi`（当前 1000）；滚轮调 scroll 里的 `&zip_xy_scaler 1 N`（N 越大越慢，当前 96），上下方向用 `zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT)` 翻转；狙击仍是相对普通速度的 `1/3`。
 
 ## 鼠标键
 

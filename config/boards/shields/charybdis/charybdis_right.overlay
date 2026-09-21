@@ -71,6 +71,17 @@
         invert-x;
         invert-y;
 
+        /*
+         * Keep sensor in RUN while ZMK is ACTIVE so short idle does not
+         * drop into REST2/REST3 (100–500ms sample) and feel laggy on wake.
+         * After ZMK IDLE/SLEEP it falls back to normal downshift.
+         *
+         * 4ms RUN sampling (~250Hz): meaningful over USB to the central
+         * (right) half; BLE to host cannot sustain that report rate.
+         */
+        force-awake;
+        force-awake-4ms-mode;
+
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
         y-input-code = <INPUT_REL_Y>;

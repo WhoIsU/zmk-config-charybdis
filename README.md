@@ -35,9 +35,25 @@ MOUSE / SNIPE / SCROLL 三层共用同一套按键，定义在 `config/charybdis
 
 球在右拇指下，按键在食指/中指/无名指下，等于把右手变成一只鼠标。
 
-其余键都是 `&trans`，会穿透到 Base 层，所以 Shift+点击（左拇指）和 Alt+点击（长按 `/`）照常可用。但 `;` 被占用成了右键，而 Base 层的 Ctrl 只存在于 `&mt LCTRL SEMI`，所以**鼠标层没有 Ctrl，Ctrl+点击用不了**；想要的话把 `MS_HOME_R` 里 `;` 那一位改回 `&trans`。
+其余键都是 `&trans`，会穿透到 Base 层，所以 Shift+点击（左拇指）和 Alt+点击（先按住 `/` 超过 200ms）照常可用。但 `;` 被占用成了右键，而 Base 层的 Ctrl 只存在于 `&hmr LCTRL SEMI`，所以**鼠标层没有 Ctrl，Ctrl+点击用不了**；想要的话把 `MS_HOME_R` 里 `;` 那一位改回 `&trans`。
 
-另外 `J` 是常用字母：滚球后的超时窗口内敲 `j` 会变成左键。误触明显的话就调小上面那个超时。
+另外 `J` 是常用字母，自动鼠标层为此加了两道保护（`charybdis_right.overlay` 里的 `&zip_temp_layer`）：
+
+- `require-prior-idle-ms = <300>`：打完字 300ms 内碰到球不会进鼠标层。
+- `excluded-positions`：鼠标层里按下列表外的任何键会立刻退出鼠标层，回到打字。列表里是鼠标键、`'`/`\`、Shift、Alt；以后往鼠标层加键要同步加进这个列表。
+
+## 点按 / 长按判定
+
+| 键 | 点按 | 长按 | 行为 |
+| --- | --- | --- | --- |
+| `;` | `;` | Ctrl | `&hmr` |
+| `/` | `/` | Alt | `&hmr` |
+| 左拇指 Space | 空格 | NAV | `&lt_spc` |
+| 左拇指 Shift | Shift（双击 = `caps_word`） | Shift | `&td_shift` |
+
+`&hmr` 按位置判定：按住 `;` / `/` 时按下**左手或拇指**的键，立刻算 Ctrl / Alt；按下**右手**的键算点按。需要配右手键时（Ctrl+L、Alt+点击、Ctrl+滚轮），先按住超过 200ms 再按。刚连续打字（150ms 内）按下时直接当点按。
+
+`&td_shift` 单点仍发 Shift，输入法的 Shift 切换中英文照常可用，只是会晚约 200ms 发出。双击进入 `caps_word`：下一个单词全大写，遇到空格或标点自动退出。
 
 ## 改 keymap 时注意
 

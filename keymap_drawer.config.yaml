@@ -121,18 +121,21 @@ parse_config:
     "&lt 4 ESC":
       tap: $$mdi:keyboard-esc$$
       hold: SYS
-    "&lt 3 SPACE":
+    "&lt_spc 3 SPACE":
       tap: $$mdi:keyboard-space$$
       hold: NAV
     "&mo 2":
       tap: MO
       hold: SYMB
-    "&mt LCTRL SEMI":
+    "&hmr LCTRL SEMI":
       tap: ';'
       hold: $$mdi:apple-keyboard-control$$
-    "&mt LALT SLASH":
+    "&hmr LALT SLASH":
       tap: '/'
       hold: $$mdi:apple-keyboard-option$$
+    "&td_shift":
+      tap: $$mdi:apple-keyboard-shift$$
+      hold: 2x CapsWord
     "&lt 5 SQT":
       tap: "'"
       hold: SNIPE

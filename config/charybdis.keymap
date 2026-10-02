@@ -29,13 +29,59 @@
     quick-tap-ms = <180>;
 };
 
-&mt {
-    flavor = "tap-preferred";
-    tapping-term-ms = <200>;
-    quick-tap-ms = <180>;
-};
+/*
+ * 键位编号（0 起，左→右、上→下）：
+ *   左手 0-5 / 12-17 / 24-29，右手 6-11 / 18-23 / 30-35，拇指 36-40。
+ */
+#define KEYS_L      0 1 2 3 4 5 12 13 14 15 16 17 24 25 26 27 28 29
+#define THUMBS      36 37 38 39 40
 
 / {
+    behaviors {
+        /*
+         * 右手标点兼修饰（; = Ctrl，/ = Alt）。
+         * 按住时按下左手键或拇指键 → 立刻判为修饰；按下右手键 → 判为点按。
+         * 想配右手键（如 Ctrl+L），先按住超过 tapping-term 再按。
+         * 刚连续打字（150ms 内）时直接当点按，避免误出修饰。
+         */
+        hmr: hold_tap_right_mod {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <180>;
+            require-prior-idle-ms = <150>;
+            hold-trigger-key-positions = <KEYS_L THUMBS>;
+            hold-trigger-on-release;
+            bindings = <&kp>, <&kp>;
+        };
+
+        /*
+         * Space 兼 NAV：balanced 下按住 Space 再完整点一下别的键才进 NAV，
+         * 打字时 Space 与下一个字母重叠仍是空格；刚打过字时直接当空格。
+         */
+        lt_spc: layer_tap_space {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <180>;
+            require-prior-idle-ms = <150>;
+            bindings = <&mo>, <&kp>;
+        };
+
+        /*
+         * 左拇指 Shift：单点 / 按住 = Shift（单点仍可切换输入法中英文），
+         * 快速双击 = caps_word（下一个单词全大写，遇空格或标点自动退出）。
+         */
+        td_shift: tap_dance_shift {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&kp LSHFT>, <&caps_word>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
@@ -43,9 +89,9 @@
             label = "Base";
             bindings = <
 &lt 4 ESC  &kp Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I      &kp O    &kp P          &kp EQUAL
-&kp TAB    &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &mt LCTRL SEMI  &lt 5 SQT
-&kp DEL    &kp Z  &kp X  &kp C  &kp V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &mt LALT SLASH  &lt 6 BSLH
-                        &lt 3 SPACE  &kp LSHFT  &mo 2        &kp RET  &kp BSPC
+&kp TAB    &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &hmr LCTRL SEMI  &lt 5 SQT
+&kp DEL    &kp Z  &kp X  &kp C  &kp V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &hmr LALT SLASH  &lt 6 BSLH
+                        &lt_spc 3 SPACE  &td_shift  &mo 2        &kp RET  &kp BSPC
             >;
         };
 
@@ -62,7 +108,7 @@ MS_TRANS_6        MS_BOTTOM_R
         Symb {
             label = "SYMB";
             bindings = <
-&trans    &kp PLUS  &kp MINUS  &kp STAR  &kp SLASH  &kp PRCNT        &trans    &kp N7  &kp N8  &kp N9  &trans    &trans
+&kp GRAVE &kp PLUS  &kp MINUS  &kp STAR  &kp SLASH  &kp PRCNT        &trans    &kp N7  &kp N8  &kp N9  &trans    &trans
 &kp LBKT  &kp EXCL  &kp PIPE   &kp AMPS  &kp LPAR   &kp RPAR         &kp CARET &kp N4  &kp N5  &kp N6  &kp PLUS  &trans
 &kp RBKT  &kp DLLR  &kp HASH   &kp AT    &kp LBRC   &kp RBRC         &kp N0    &kp N1  &kp N2  &kp N3  &kp DOT   &trans
                             &trans      &trans      &trans           &kp RET   &kp N0

@@ -124,8 +124,8 @@ parse_config:
     "&lt_spc 3 SPACE":
       tap: $$mdi:keyboard-space$$
       hold: NAV
-    "&mo 2":
-      tap: MO
+    "&mo_sl 2 7":
+      tap: SHORT
       hold: SYMB
     "&hmr LCTRL SEMI":
       tap: ';'

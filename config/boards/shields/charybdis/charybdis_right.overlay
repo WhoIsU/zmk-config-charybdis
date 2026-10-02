@@ -131,7 +131,7 @@
                 <&zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT)>;
         };
 
-        /* default: temp MOUSE layer for 750ms after ball motion */
-        input-processors = <&zip_temp_layer 1 750>;
+        /* default: temp MOUSE layer for 1200ms after ball motion */
+        input-processors = <&zip_temp_layer 1 1200>;
     };
 };

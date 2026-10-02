@@ -6,7 +6,7 @@
 
 /*
  * 层序：
- * 0 Base · 1 MOUSE · 2 SYMB · 3 NAV · 4 SYS · 5 SNIPE · 6 SCROLL
+ * 0 Base · 1 MOUSE · 2 SYMB · 3 NAV · 4 SYS · 5 SNIPE · 6 SCROLL · 7 SHORT
  *
  * 轨迹球模式由 charybdis_right.overlay 里的 input processors 按层匹配：
  * SNIPE(5)/SCROLL(6) 覆盖优先，否则 zip_temp_layer 临时开 MOUSE(1)。
@@ -27,6 +27,11 @@
     tapping-term-ms = <200>;
     flavor = "tap-preferred";
     quick-tap-ms = <180>;
+};
+
+/* 单点 MO 进入 SHORT 后，1.5 秒内没按键就自动退出 */
+&sl {
+    release-after-ms = <1500>;
 };
 
 /*
@@ -80,6 +85,18 @@
             tapping-term-ms = <200>;
             bindings = <&kp LSHFT>, <&caps_word>;
         };
+
+        /*
+         * 左拇指 MO：按住 = SYMB；单点 = 一次性 SHORT 层（按一颗键后自动回 Base）。
+         * hold-preferred：按住期间只要按了别的键就一定是 SYMB，打数字手感不变。
+         */
+        mo_sl: hold_mo_tap_sticky {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&sl>;
+        };
     };
 
     keymap {
@@ -91,7 +108,7 @@
 &lt 4 ESC  &kp Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I      &kp O    &kp P          &kp EQUAL
 &kp TAB    &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &hmr LCTRL SEMI  &lt 5 SQT
 &kp DEL    &kp Z  &kp X  &kp C  &kp V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &hmr LALT SLASH  &lt 6 BSLH
-                        &lt_spc 3 SPACE  &td_shift  &mo 2        &kp RET  &kp BSPC
+                        &lt_spc 3 SPACE  &td_shift  &mo_sl 2 7        &kp RET  &kp BSPC
             >;
         };
 
@@ -130,7 +147,7 @@ MS_TRANS_6        MS_BOTTOM_R
             bindings = <
 &trans  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4        &kp F1  &kp F2  &kp F3  &kp F4  &kp F5  &none
 &none   &bt BT_CLR    &out OUT_TOG  &none         &none         &none               &kp F6  &kp F7  &kp F8  &kp F9  &kp F10 &none
-&none   &sys_reset    &bootloader   &none         &none         &none               &kp F11 &kp F12 &none   &none   &none   &none
+&none   &sys_reset    &bootloader   &none         &none         &none               &kp F11 &kp F12 &none   &bootloader &sys_reset &none
                                       &trans        &trans        &trans             &trans  &trans
             >;
         };
@@ -152,6 +169,23 @@ MS_TRANS_6        MS_TRANS_6
 MS_TRANS_6        MS_HOME_R
 MS_TRANS_6        MS_BOTTOM_R
                         &trans  &trans  &trans        &trans  &trans
+            >;
+        };
+
+        /*
+         * 单点 MO 进入，按一颗键后自动回 Base。按字母联想摆放：
+         * 左上 Win+1~5；S 截图；F 全局搜索；左下虚拟桌面左/右/新建/任务视图；
+         * 右手 IJKL 窗口贴靠（与 NAV 方向一致）；U/O 上/下一个标签；P 命令面板；
+         * 右下 上一曲/播放暂停/音量-/音量+/静音。
+         * Esc 位和拇指透传：点错时按 Esc 取消，或等 1.5 秒自动退出。
+         */
+        Short {
+            label = "SHORT";
+            bindings = <
+&trans  &kp LG(N1)       &kp LG(N2)        &kp LG(N3)      &kp LG(N4)     &kp LG(N5)        &none        &kp LC(LS(TAB))  &kp LG(UP)    &kp LC(TAB)    &kp LC(LS(P))  &none
+&none   &none            &kp LG(LS(S))     &none           &kp LC(LS(F))  &none             &none        &kp LG(LEFT)     &kp LG(DOWN)  &kp LG(RIGHT)  &none          &none
+&none   &kp LG(LC(LEFT)) &kp LG(LC(RIGHT)) &kp LG(LC(D))   &kp LG(TAB)    &none             &kp C_PREV   &kp C_PP         &kp C_VOL_DN  &kp C_VOL_UP   &kp C_MUTE     &none
+                                           &trans          &trans         &trans            &trans       &trans
             >;
         };
     };

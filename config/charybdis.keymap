@@ -2,6 +2,7 @@
 #include <dt-bindings/zmk/mouse.h>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/modifiers.h>
 #include <dt-bindings/zmk/outputs.h>
 
 /*
@@ -62,6 +63,19 @@
         };
 
         /*
+         * Shift + / 直接走普通按键，保留 Shift 输出问号。
+         * 避免 / 超过 200ms 被判为 Alt，吞掉问号并误发 Alt+Shift 切换输入语言。
+         * 不按 Shift 时仍是点按 /、长按 Alt；先按住 / 再加 Shift 仍可组合修饰键。
+         */
+        slash_alt: slash_alt {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&hmr LALT SLASH>, <&kp SLASH>;
+            mods = <(MOD_LSFT | MOD_RSFT)>;
+            keep-mods = <(MOD_LSFT | MOD_RSFT)>;
+        };
+
+        /*
          * Space 兼 NAV：balanced 下按住 Space 再完整点一下别的键才进 NAV，
          * 打字时 Space 与下一个字母重叠仍是空格；刚打过字时直接当空格。
          */
@@ -107,7 +121,7 @@
             bindings = <
 &lt 4 ESC  &kp Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I      &kp O    &kp P          &kp EQUAL
 &kp TAB    &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &hmr LCTRL SEMI  &lt 5 SQT
-&kp DEL    &kp Z  &kp X  &kp C  &kp V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &hmr LALT SLASH  &lt 6 BSLH
+&kp DEL    &kp Z  &kp X  &kp C  &kp V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &slash_alt       &lt 6 BSLH
                         &lt_spc 3 SPACE  &td_shift  &mo_sl 2 7        &kp RET  &kp BSPC
             >;
         };

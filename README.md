@@ -47,12 +47,14 @@ MOUSE / SNIPE / SCROLL 三层共用同一套按键，定义在 `config/charybdis
 | 键 | 点按 | 长按 | 行为 |
 | --- | --- | --- | --- |
 | `;` | `;` | Ctrl | `&hmr` |
-| `/` | `/` | Alt | `&hmr` |
+| `/` | `/`；按住 Shift 时直接输出 `?` | Alt（未先按 Shift 时） | `&slash_alt` → `&hmr` |
 | 左拇指 Space | 空格 | NAV | `&lt_spc` |
 | 左拇指 Shift | Shift（双击 = `caps_word`） | Shift | `&td_shift` |
 | 左拇指 MO | 一次性 SHORT 层 | SYMB | `&mo_sl` |
 
 `&hmr` 按位置判定：按住 `;` / `/` 时按下**左手或拇指**的键，立刻算 Ctrl / Alt；按下**右手**的键算点按。需要配右手键时（Ctrl+L、Alt+点击、Ctrl+滚轮），先按住超过 200ms 再按。刚连续打字（150ms 内）按下时直接当点按。
+
+`/` 外层的 `&slash_alt` 会先检查左右 Shift：已经按住 Shift 时，直接发送保留 Shift 的普通 `/` 按键，不进入长按判定，因此连点或按住 `/` 都不会从这颗键误发 Alt。这样可避免原先 `/` 按住超过 200ms 后变成 Alt、问号丢失并可能触发 Windows 的 Alt+Shift 输入语言切换。中文模式下最终显示 `？` 还是 `?` 由输入法标点设置决定。需要 Alt+Shift 组合时，先按住 `/` 超过 200ms，再按 Shift。
 
 `&td_shift` 单点仍发 Shift，输入法的 Shift 切换中英文照常可用，只是会晚约 200ms 发出。双击进入 `caps_word`：下一个单词全大写，遇到空格或标点自动退出。
 

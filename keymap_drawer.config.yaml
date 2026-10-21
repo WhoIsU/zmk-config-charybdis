@@ -130,8 +130,9 @@ parse_config:
     "&hmr LCTRL SEMI":
       tap: ';'
       hold: $$mdi:apple-keyboard-control$$
-    "&hmr LALT SLASH":
+    "&slash_alt":
       tap: '/'
+      shifted: '?'
       hold: $$mdi:apple-keyboard-option$$
     "&td_shift":
       tap: $$mdi:apple-keyboard-shift$$
